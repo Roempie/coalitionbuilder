@@ -3,7 +3,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=coalitionbuilder
     username: postgres
     password: admin
-    driver-class-name: org.postgresql.Driver
+    schema: postgres
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -11,5 +11,5 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        default_schema: public
     database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
