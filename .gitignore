@@ -1,2 +1,5 @@
 coalitionbuilder_fe/node_modules/
+coalitionbuilder_test/dist/
+coalitionbuilder_test/node_modules/
 coalitionbuilder_be/ruiterr/
+.idea/
