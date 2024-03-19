@@ -1,0 +1,192 @@
+package com.coaltionbuilder.coalitionbuilder_be.service;
+
+import com.coaltionbuilder.coalitionbuilder_be.exception.CommentNotFoundException;
+import com.coaltionbuilder.coalitionbuilder_be.exception.PostNotFoundException;
+import com.coaltionbuilder.coalitionbuilder_be.exception.ResourceInvalidException;
+import com.coaltionbuilder.coalitionbuilder_be.mapper.DTOMapper;
+import com.coaltionbuilder.coalitionbuilder_be.model.*;
+import com.coaltionbuilder.coalitionbuilder_be.repository.PostRepository;
+import com.coaltionbuilder.coalitionbuilder_be.repository.CommentRepository;
+import com.coaltionbuilder.coalitionbuilder_be.repository.UserRepository;
+import jakarta.annotation.PostConstruct;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+
+@Service
+public class DiscussionService {
+
+  private final PostRepository postRepository;
+
+  private final CommentRepository commentRepository;
+
+  private final UserRepository userRepository;
+
+  private final DTOMapper DTOMapper;
+
+  private List<Post> posts = new ArrayList<>();
+
+  private User user;
+
+  public DiscussionService(PostRepository postRepository, CommentRepository commentRepository, UserRepository userRepository, DTOMapper DTOMapper) {
+    this.postRepository = postRepository;
+    this.commentRepository = commentRepository;
+    this.userRepository = userRepository;
+    this.DTOMapper = DTOMapper;
+  }
+
+  @PostConstruct
+  public void init() {
+
+    Random rand = new Random();
+
+    // Make user
+    this.user = User.builder()
+            .email("roemerderuiter@gmail.com")
+            .firstname("Roemer")
+            .lastname("Roemer")
+            .role(Role.USER)
+            .password("asdf")
+            .build();
+    this.userRepository.save(user);
+
+    // Make post for user
+
+    for (int i = 1; i <= rand.nextInt(5) + 1; i++) {
+
+      Post post = Post.builder()
+              .title("Title " + i)
+              .description("Testpost " + i)
+              .author(user)
+              .build();
+      this.posts.add(post);
+
+      this.postRepository.save(post);
+    }
+
+    // Add comments to posts
+    for(Post post : posts) {
+
+      for(int i = 1; i <= rand.nextInt(5) + 1; i++) {
+        Comment comment = Comment.builder()
+                .author(user)
+                .post(post)
+                .message("Example comment " + i)
+                .build();
+
+        this.commentRepository.save(comment);
+
+        for(int j = 1; j <= rand.nextInt(5) + 1; j++) {
+          Comment childComment = Comment.builder()
+                  .author(user)
+                  .post(post)
+                  .parentComment(comment)
+                  .message("Example childcomment " + i)
+                  .build();
+          this.commentRepository.save(childComment);
+
+          for(int h = 1; h <= rand.nextInt(5) + 1; h++) {
+
+            Comment subChildComment = Comment.builder()
+                    .author(user)
+                    .post(post)
+                    .parentComment(childComment)
+                    .message("Example subchildcomment " + i)
+                    .build();
+            this.commentRepository.save(subChildComment);
+          }
+
+        }
+      }
+    }
+  }
+
+  public List<Post> retrieveAllPosts() {
+    return this.postRepository.findAll();
+  }
+
+  public List<Post> retrievePostsByUser(User user)  {
+    return this.postRepository.findByAuthor(user);
+  }
+
+  public List<Comment> retrieveRootCommentsByPost(Post post) {
+    return this.commentRepository.findByPostAndParentCommentIsNull(post);
+  }
+
+  public List<Comment> retrieveCommentsByUser(User user) {
+    return this.commentRepository.findByAuthor(user);
+  }
+
+  public List<Comment> retrieveChildComments(Comment comment) {
+    return this.commentRepository.findByParentComment(comment);
+  }
+
+//  public List<Comment> retrieveChildCommentsById(Integer id) {
+//    return this.commentRepository.findChildCommentsById(id);
+//  }
+
+  public Comment retrieveCommentById(Integer id) {
+    return this.commentRepository.findById(id).orElseThrow(
+            () -> new CommentNotFoundException("Comment with ID=" + id + " does not exist.")
+    );
+  }
+
+  public Post retrievePostById(Integer id) {
+    return this.postRepository.findById(id).orElseThrow(
+            () -> new PostNotFoundException("Post with ID=" + id + " does not exist.")
+    );
+  }
+
+  public Post savePost(PostDto postDto) {
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = authentication.getName();
+
+    Post post = new Post();
+    post.setTitle(postDto.getTitle());
+    post.setDescription(postDto.getDescription());
+    post.setAuthor(this.userRepository.findByEmail(username));
+
+    this.postRepository.save(post);
+
+    return post;
+  }
+
+  public Comment saveComment(CommentDto commentDto) {
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = authentication.getName();
+
+    Comment comment = new Comment();
+    comment.setMessage(commentDto.getMessage());
+    comment.setAuthor(this.userRepository.findByEmail(username));
+    comment.setPost(
+            this.postRepository.findById(commentDto.getPostId()).orElseThrow(
+                    () -> new PostNotFoundException("Post with ID=" + commentDto.getPostId() + " does not exist.")
+            )
+    );
+
+    if(commentDto.getParentCommentId() != null) {
+      comment.setParentComment(
+              this.commentRepository.findById(commentDto.getParentCommentId()).orElseThrow(
+                      () -> new CommentNotFoundException("Comment with ID=" + commentDto.getParentCommentId() + " does not exist.")
+              )
+      );
+
+      if(!Objects.equals(comment.getPost().getId(), comment.getParentComment().getPost().getId())) {
+        throw new ResourceInvalidException("Id of post and parentcomment post do not match. ");
+      }
+
+    }
+
+
+    this.commentRepository.save(comment);
+
+    return comment;
+  }
+}

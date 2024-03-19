@@ -1,0 +1,15 @@
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/controller/DemoController.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/auth/AuthenticationController.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/user/Role.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/CoalitionbuilderBeApplication.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/config/ApplicationConfig.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/auth/AuthenticationService.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/auth/RegisterRequest.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/config/JwtService.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/user/UserRepository.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/auth/AuthenticationRequest.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/auth/AuthenticationResponse.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/user/User.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/config/JwtAuthentificationFilter.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/repository/UserRepository.java
+/Users/rruiter/Desktop/coalitionbuilder/coalitionbuilder_be/src/main/java/com/coaltionbuilder/coalitionbuilder_be/config/SecurityConfiguration.java
