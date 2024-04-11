@@ -8,7 +8,10 @@
     }
     @case ("loaded") {
     <div class="h-full flex items-center justify-center">
-      <div class="w-8/12">
+      <div class="w-8/12 p-2">
+        <div class="h-full flex justify-end p-2">
+          <button class="bg-blue text-white rounded-md hover:bg-slate-600 p-2">New Post</button>
+        </div>
         @for(post of posts.data; track $index) {
           <div class="bg-arctic m-2 hover:bg-arctic_highlight ease-in-out transition rounded-sm cursor-pointer p-3" (click)="$event.preventDefault(); selectPost(post.id)">
             <h2 class="text-xl leading-8 text-navy">{{ post.title }}</h2>

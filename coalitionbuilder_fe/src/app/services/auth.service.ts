@@ -1,16 +1,15 @@
-import {inject, Injectable} from '@angular/core';
-import {Observable} from "rxjs";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 const AUTH_API = 'http://localhost:8080/api/v1/auth/';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly http: HttpClient = inject(HttpClient);
@@ -22,11 +21,16 @@ export class AuthService {
         email,
         password,
       },
-      httpOptions
+      httpOptions,
     );
   }
 
-  register(email: string, password: string, firstname: string, lastname: string): Observable<any> {
+  register(
+    email: string,
+    password: string,
+    firstname: string,
+    lastname: string,
+  ): Observable<any> {
     return this.http.post(
       AUTH_API + 'register',
       {
@@ -35,11 +39,11 @@ export class AuthService {
         email: email,
         password: password,
       },
-      httpOptions
+      httpOptions,
     );
   }
 
   logout(): Observable<any> {
-    return this.http.post(AUTH_API + 'signout', { }, httpOptions);
+    return this.http.post(AUTH_API + 'signout', {}, httpOptions);
   }
 }
