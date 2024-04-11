@@ -38,7 +38,6 @@ public class SecurityConfiguration {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(requests -> requests
                     .requestMatchers("/api/v1/auth/**").permitAll()
-                    .requestMatchers("/api/v1/discussion/**").permitAll()
                     .anyRequest().authenticated())
             .sessionManagement(httpSessionManagement ->
                     httpSessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -52,6 +51,7 @@ public class SecurityConfiguration {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(Arrays.asList("http://localhost:8081"));
+    configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
     configuration.setExposedHeaders(Arrays.asList("Authorization"));

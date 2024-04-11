@@ -20,6 +20,10 @@ public class CommentResponse implements Serializable {
 
   private String message;
 
+  private LocalDateTime creationDate;
+
   private String author;
+
+  private Integer numChildComments;
 
 }

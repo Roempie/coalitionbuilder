@@ -1,6 +1,7 @@
 package com.coaltionbuilder.coalitionbuilder_be.auth;
 
 import com.coaltionbuilder.coalitionbuilder_be.config.JwtService;
+import com.coaltionbuilder.coalitionbuilder_be.exception.UserAlreadyExistException;
 import com.coaltionbuilder.coalitionbuilder_be.model.Role;
 import com.coaltionbuilder.coalitionbuilder_be.model.User;
 import com.coaltionbuilder.coalitionbuilder_be.repository.UserRepository;
@@ -23,6 +24,11 @@ public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
 
   public AuthenticationResponse register(RegisterRequest request) {
+
+    repository.findByEmail(request.getEmail()).ifPresent(user -> {
+      throw new UserAlreadyExistException("User with email " + request.getEmail() + " already exists");
+    });
+
     var user = User.builder()
             .firstname(request.getFirstname())
             .lastname(request.getLastname())
@@ -39,17 +45,18 @@ public class AuthenticationService {
   }
 
   public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    var user = repository.findByEmail(request.getEmail()).orElseThrow(() -> new UserAlreadyExistException("User with email " + request.getEmail() + " does not exist"));
     authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                     request.getEmail(),
                     request.getPassword()
             )
     );
-    var user = repository.findByEmail(request.getEmail());
 
     var jwtToken = jwtService.generateToken(user);
     return AuthenticationResponse.builder()
             .token(jwtToken)
+            .userDetails(user)
             .build();
   }
 }

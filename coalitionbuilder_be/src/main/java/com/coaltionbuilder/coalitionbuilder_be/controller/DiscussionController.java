@@ -24,16 +24,24 @@ public class DiscussionController {
 
   private final DiscussionService discussionService;
 
-  @GetMapping
+  @GetMapping("/posts")
   @ResponseBody
   public ResponseEntity<List<Post>> getAll() {
     return ResponseEntity.ok(this.discussionService.retrieveAllPosts());
   }
 
-  @PostMapping("/post")
+  @PostMapping("/posts")
   public ResponseEntity<PostResponse> postPost(@RequestBody PostDto postDto) {
 
     Post post = this.discussionService.savePost(postDto);
+
+    List<CommentResponse> comments = this.discussionService.retrieveRootCommentsByPost(post).stream().map(
+            comment -> CommentResponse.builder().message(comment.getMessage()).author(comment.getAuthor().getFirstname())
+                    .creationDate(comment.getCreationDate()).id(comment.getId()).numChildComments(
+                            comment.getChildComments() == null ? 0 : comment.getChildComments().size()
+                    ).build()
+    ).toList();
+
 
     // Build postresponse
     PostResponse postResponse = PostResponse.builder()
@@ -42,13 +50,13 @@ public class DiscussionController {
             .description(post.getDescription())
             .creationDate(post.getCreationDate())
             .author(post.getAuthor().getFirstname())
-            .rootComments(this.discussionService.retrieveRootCommentsByPost(post))
+            .rootComments(comments)
             .build();
 
     return ResponseEntity.ok(postResponse);
   }
 
-  @PostMapping("/comment")
+  @PostMapping("/comments")
   public ResponseEntity<CommentResponse> postComment(@RequestBody CommentDto commentDto) {
 
     Comment comment = this.discussionService.saveComment(commentDto);
@@ -63,12 +71,18 @@ public class DiscussionController {
     return ResponseEntity.ok(commentResponse);
   }
 
-  @GetMapping("/post/{id}")
+  @GetMapping("/posts/{id}")
   public ResponseEntity<PostResponse> getPost(@PathVariable Integer id, @RequestParam(defaultValue = "false") boolean allChildComments) {
 
     // Retrieve post
     Post post = this.discussionService.retrievePostById(id);
 
+    List<CommentResponse> comments = this.discussionService.retrieveRootCommentsByPost(post).stream().map(
+            comment -> CommentResponse.builder().message(comment.getMessage()).author(comment.getAuthor().getFirstname())
+                    .creationDate(comment.getCreationDate()).id(comment.getId()).numChildComments(
+                            comment.getChildComments() == null ? 0 : comment.getChildComments().size()
+                    ).build()
+    ).toList();
 
     // Build postresponse
     PostResponse postResponse = PostResponse.builder()
@@ -77,22 +91,30 @@ public class DiscussionController {
             .description(post.getDescription())
             .creationDate(post.getCreationDate())
             .author(post.getAuthor().getFirstname())
-            .rootComments(this.discussionService.retrieveRootCommentsByPost(post))
+            .rootComments(comments)
             .build();
 
     return ResponseEntity.ok(postResponse);
   }
 
-  @GetMapping("/comment/{id}")
+  @GetMapping("/comments/{id}")
   public ResponseEntity<ChildCommentsResponse> getComment(@PathVariable Integer id, @RequestParam(defaultValue = "false") boolean allChildComments) {
 
     // Retrieve comment
     Comment comment = this.discussionService.retrieveCommentById(id);
 
+    List<CommentResponse> comments = comment.getChildComments().stream().map(
+            commenta -> CommentResponse.builder().message(commenta.getMessage()).author(commenta.getAuthor().getFirstname())
+                    .creationDate(commenta.getCreationDate()).id(commenta.getId()).numChildComments(
+                            commenta.getChildComments() == null ? 0 : commenta.getChildComments().size()
+                    ).build()
+    ).toList();
+
     // build childcommentresponse
     ChildCommentsResponse childCommentsResponse = ChildCommentsResponse.builder()
             .comment(comment)
-            .childComments(comment.getChildComments())
+            .childComments(comments)
+            .numChildComments(comment.getChildComments() == null ? 0 : comment.getChildComments().size())
             .build();
 
     return ResponseEntity.ok(childCommentsResponse);

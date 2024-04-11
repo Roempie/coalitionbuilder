@@ -3,6 +3,7 @@ package com.coaltionbuilder.coalitionbuilder_be.service;
 import com.coaltionbuilder.coalitionbuilder_be.exception.CommentNotFoundException;
 import com.coaltionbuilder.coalitionbuilder_be.exception.PostNotFoundException;
 import com.coaltionbuilder.coalitionbuilder_be.exception.ResourceInvalidException;
+import com.coaltionbuilder.coalitionbuilder_be.exception.UserNotFoundException;
 import com.coaltionbuilder.coalitionbuilder_be.mapper.DTOMapper;
 import com.coaltionbuilder.coalitionbuilder_be.model.*;
 import com.coaltionbuilder.coalitionbuilder_be.repository.PostRepository;
@@ -49,19 +50,19 @@ public class DiscussionService {
     this.user = User.builder()
             .email("roemerderuiter@gmail.com")
             .firstname("Roemer")
-            .lastname("Roemer")
+            .lastname("De Ruiter")
             .role(Role.USER)
-            .password("asdf")
+            .password("$2a$10$5Lqk5/IfYt16QhVZIWM/9uVTE131JCVdkbypHvexdFXHX8W43UpUO") // hallo123
             .build();
     this.userRepository.save(user);
 
     // Make post for user
 
-    for (int i = 1; i <= rand.nextInt(5) + 1; i++) {
+    for (int i = 1; i <= 15; i++) {
 
       Post post = Post.builder()
               .title("Title " + i)
-              .description("Testpost " + i)
+              .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet urna non orci volutpat dictum eget nec arcu. Sed commodo, ante quis finibus finibus, sapien mauris venenatis nulla, sed interdum ipsum magna eget neque. Sed pretium placerat ipsum, et semper sem bibendum eu. Sed ultrices ex vitae molestie venenatis. Nunc scelerisque quam leo, id euismod nisl eleifend sit amet. Donec non lectus non magna efficitur tempor. Duis et nibh risus. Donec egestas, purus sed convallis luctus, risus leo mattis justo, bibendum elementum ex mauris in magna. In vehicula justo id facilisis malesuada. Vivamus pulvinar tristique est vitae euismod. Curabitur condimentum eu enim ac mollis. Fusce sodales vehicula velit, a gravida quam mattis consectetur. Sed diam justo, tempor tristique commodo sit amet, luctus quis lorem." )
               .author(user)
               .build();
       this.posts.add(post);
@@ -70,40 +71,40 @@ public class DiscussionService {
     }
 
     // Add comments to posts
-    for(Post post : posts) {
-
-      for(int i = 1; i <= rand.nextInt(5) + 1; i++) {
-        Comment comment = Comment.builder()
-                .author(user)
-                .post(post)
-                .message("Example comment " + i)
-                .build();
-
-        this.commentRepository.save(comment);
-
-        for(int j = 1; j <= rand.nextInt(5) + 1; j++) {
-          Comment childComment = Comment.builder()
-                  .author(user)
-                  .post(post)
-                  .parentComment(comment)
-                  .message("Example childcomment " + i)
-                  .build();
-          this.commentRepository.save(childComment);
-
-          for(int h = 1; h <= rand.nextInt(5) + 1; h++) {
-
-            Comment subChildComment = Comment.builder()
-                    .author(user)
-                    .post(post)
-                    .parentComment(childComment)
-                    .message("Example subchildcomment " + i)
-                    .build();
-            this.commentRepository.save(subChildComment);
-          }
-
-        }
-      }
-    }
+//    for(Post post : posts) {
+//
+//      for(int i = 1; i <= rand.nextInt(15) + 1; i++) {
+//        Comment comment = Comment.builder()
+//                .author(user)
+//                .post(post)
+//                .message("Example comment " + i)
+//                .build();
+//
+//        this.commentRepository.save(comment);
+//
+//        for(int j = 1; j <= rand.nextInt(15); j++) {
+//          Comment childComment = Comment.builder()
+//                  .author(user)
+//                  .post(post)
+//                  .parentComment(comment)
+//                  .message("Example childcomment " + i)
+//                  .build();
+//          this.commentRepository.save(childComment);
+//
+//          for(int h = 1; h <= rand.nextInt(15); h++) {
+//
+//            Comment subChildComment = Comment.builder()
+//                    .author(user)
+//                    .post(post)
+//                    .parentComment(childComment)
+//                    .message("Example subchildcomment " + i)
+//                    .build();
+//            this.commentRepository.save(subChildComment);
+//          }
+//
+//        }
+//      }
+//    }
   }
 
   public List<Post> retrieveAllPosts() {
@@ -150,7 +151,9 @@ public class DiscussionService {
     Post post = new Post();
     post.setTitle(postDto.getTitle());
     post.setDescription(postDto.getDescription());
-    post.setAuthor(this.userRepository.findByEmail(username));
+    post.setAuthor(this.userRepository.findByEmail(username).orElseThrow(
+            () -> new UserNotFoundException("User with email " + username + " does not exist.")
+    ));
 
     this.postRepository.save(post);
 
@@ -164,7 +167,9 @@ public class DiscussionService {
 
     Comment comment = new Comment();
     comment.setMessage(commentDto.getMessage());
-    comment.setAuthor(this.userRepository.findByEmail(username));
+    comment.setAuthor(this.userRepository.findByEmail(username).orElseThrow(
+            () -> new UserNotFoundException("User with email " + username + " does not exist.")
+    ));
     comment.setPost(
             this.postRepository.findById(commentDto.getPostId()).orElseThrow(
                     () -> new PostNotFoundException("Post with ID=" + commentDto.getPostId() + " does not exist.")

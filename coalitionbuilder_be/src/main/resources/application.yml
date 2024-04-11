@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=coalitionbuilder
     username: postgres
-    password: admin
+    password: postgres
     schema: postgres
   jpa:
     hibernate:

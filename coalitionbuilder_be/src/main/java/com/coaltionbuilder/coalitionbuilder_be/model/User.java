@@ -36,6 +36,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @ToString.Exclude
     @OneToMany(
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
@@ -43,6 +44,7 @@ public class User implements UserDetails {
             mappedBy = "author")
     private List<Post> posts;
 
+    @ToString.Exclude
     @OneToMany(
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,

@@ -1,5 +1,6 @@
 package com.coaltionbuilder.coalitionbuilder_be.controller;
 
+import com.coaltionbuilder.coalitionbuilder_be.exception.UserNotFoundException;
 import com.coaltionbuilder.coalitionbuilder_be.model.User;
 import com.coaltionbuilder.coalitionbuilder_be.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,7 @@ public class DemoController {
 
   @GetMapping
   public ResponseEntity<String> sayHello(@RequestParam String email) {
-    System.out.println(email);
-    User user = this.userRepository.findByEmail(email);
+    User user = this.userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email " + email + " does not exist"));
 
     return ResponseEntity.ok(user.toString());
   }

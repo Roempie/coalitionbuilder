@@ -26,6 +26,6 @@ public class PostResponse implements Serializable {
 
   private LocalDateTime creationDate;
 
-  private List<Comment> rootComments;
+  private List<CommentResponse> rootComments;
 
 }

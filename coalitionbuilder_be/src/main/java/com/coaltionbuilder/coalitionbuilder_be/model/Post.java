@@ -32,6 +32,7 @@ public class Post {
 
   private String title;
 
+  @Column(length = 2048)
   private String description;
 
   @CreationTimestamp

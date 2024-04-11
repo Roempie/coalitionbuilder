@@ -16,6 +16,8 @@ public class ChildCommentsResponse {
 
   private Comment comment;
 
-  private List<Comment> childComments;
+  private List<CommentResponse> childComments;
+
+  private Integer numChildComments;
 
 }

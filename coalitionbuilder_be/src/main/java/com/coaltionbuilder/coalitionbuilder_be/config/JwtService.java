@@ -1,8 +1,6 @@
 package com.coaltionbuilder.coalitionbuilder_be.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,12 +58,16 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        JwtParserBuilder parser = Jwts.parserBuilder();
+        parser.setAllowedClockSkewSeconds((long) 393483484343.0);
+        parser.setSigningKey(getSigningKey());
+        return parser.build().parseClaimsJws(token).getBody();
+//        return Jwts
+//                .parserBuilder()
+//                .setSigningKey(getSigningKey())
+//                .build()
+//                .parseClaimsJws(token)
+//                .getBody();
     }
 
     private Key getSigningKey() {

@@ -26,7 +26,7 @@ public class Comment {
   @GeneratedValue
   private Integer id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "author_id")
   @JsonIgnore
   private User author;
