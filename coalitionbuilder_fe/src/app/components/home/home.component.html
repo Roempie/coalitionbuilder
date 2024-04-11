@@ -1,0 +1,27 @@
+@if (postsRequest$ | async; as posts) {
+  @switch (posts.state) {
+    @case ("loading") {
+      Loading...
+    }
+    @case ("error") {
+      Error: {{ posts.error.message }}
+    }
+    @case ("loaded") {
+    <div class="h-full flex items-center justify-center">
+      <div class="w-8/12">
+        @for(post of posts.data; track $index) {
+          <div class="bg-arctic m-2 hover:bg-arctic_highlight ease-in-out transition rounded-sm cursor-pointer p-3" (click)="$event.preventDefault(); selectPost(post.id)">
+            <h2 class="text-xl leading-8 text-navy">{{ post.title }}</h2>
+            <div class="w-full justify-between flex">
+              <p class="text-sm text-blue leading-4 font-light">{{ post.creationDate | dateAgo }}</p>
+              <p class="text-sm leading-4 tracking-tighter font-extralight">{{ post.author }}</p>
+            </div>
+          </div>
+        } @empty {
+          No posts found.
+        }
+      </div>
+    </div>
+    }
+  }
+}

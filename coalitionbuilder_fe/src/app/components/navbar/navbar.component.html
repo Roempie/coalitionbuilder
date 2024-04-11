@@ -1,0 +1,17 @@
+<nav *ngIf="storageService.isLoggedIn()" class="flex bg-blue p-6 mb-16">
+  <div class="mr-6">
+    <span class="font-semibold text-xl tracking-tight cursor-default text-black">coalitionbuilder</span>
+  </div>
+  <div class="items-center flex flex-grow">
+    <div class="text-sm flex-grow">
+      <a routerLink="/home" class="inline-block text-navy hover:text-black transition ease-in-out mr-4">
+        Home
+      </a>
+    </div>
+    <div>
+      <a (click)="onLogout()" class="leading-none text-navy hover:text-black transition ease-in-out mr-4 cursor-pointer">
+        {{ storageService.isLoggedIn() ? 'Logout' : 'Login' }}
+      </a>
+    </div>
+  </div>
+</nav>
