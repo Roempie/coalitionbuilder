@@ -1,6 +1,7 @@
 package com.coaltionbuilder.coalitionbuilder_be.controller;
 
 
+import com.coaltionbuilder.coalitionbuilder_be.mapper.Mapper;
 import com.coaltionbuilder.coalitionbuilder_be.model.Comment;
 import com.coaltionbuilder.coalitionbuilder_be.model.CommentDto;
 import com.coaltionbuilder.coalitionbuilder_be.model.Post;
@@ -11,8 +12,6 @@ import com.coaltionbuilder.coalitionbuilder_be.response.PostResponse;
 import com.coaltionbuilder.coalitionbuilder_be.service.DiscussionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +22,8 @@ import java.util.List;
 public class DiscussionController {
 
   private final DiscussionService discussionService;
+
+  private final Mapper dtomapper;
 
   @GetMapping("/posts")
   @ResponseBody

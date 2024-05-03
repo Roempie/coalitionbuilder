@@ -4,7 +4,7 @@ export interface Post {
   description: string;
   creationDate: Date;
   author: string;
-  rootComments: Comment[];
+  comments: Comment[];
 }
 
 export interface Comment {

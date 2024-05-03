@@ -9,5 +9,4 @@ public class CoalitionbuilderBeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CoalitionbuilderBeApplication.class, args);
 	}
-
 }

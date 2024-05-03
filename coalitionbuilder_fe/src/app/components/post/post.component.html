@@ -27,7 +27,7 @@
                     </div>
                 }
                 </div>
-                  @for(comment of post.data.rootComments; track $index) {
+                  @for(comment of post.data.comments; track $index) {
                     <app-comment [comment]="comment" [post]="post.data" ></app-comment>
                     <hr class="h-0.5 bg-gray-100 border-0 mx-auto ">
                   } @empty { 

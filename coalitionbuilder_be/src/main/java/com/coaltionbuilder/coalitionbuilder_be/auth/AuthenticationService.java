@@ -37,15 +37,17 @@ public class AuthenticationService {
             .role(Role.USER)
             .build();
     repository.save(user);
-    var jwtToken = jwtService.generateToken(user);
+
     return AuthenticationResponse.builder()
             .userDetails(user)
-            .token(jwtToken)
+            .token(jwtService.generateToken(user))
             .build();
   }
 
   public AuthenticationResponse authenticate(AuthenticationRequest request) {
-    var user = repository.findByEmail(request.getEmail()).orElseThrow(() -> new UserAlreadyExistException("User with email " + request.getEmail() + " does not exist"));
+
+    var user = repository.findByEmail(request.getEmail()).orElseThrow(() -> new UserAlreadyExistException("Invalid credentials"));
+
     authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                     request.getEmail(),
@@ -53,9 +55,8 @@ public class AuthenticationService {
             )
     );
 
-    var jwtToken = jwtService.generateToken(user);
     return AuthenticationResponse.builder()
-            .token(jwtToken)
+            .token(jwtService.generateToken(user))
             .userDetails(user)
             .build();
   }

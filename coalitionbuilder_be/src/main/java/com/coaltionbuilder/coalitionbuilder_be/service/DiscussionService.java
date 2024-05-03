@@ -4,12 +4,13 @@ import com.coaltionbuilder.coalitionbuilder_be.exception.CommentNotFoundExceptio
 import com.coaltionbuilder.coalitionbuilder_be.exception.PostNotFoundException;
 import com.coaltionbuilder.coalitionbuilder_be.exception.ResourceInvalidException;
 import com.coaltionbuilder.coalitionbuilder_be.exception.UserNotFoundException;
-import com.coaltionbuilder.coalitionbuilder_be.mapper.DTOMapper;
+import com.coaltionbuilder.coalitionbuilder_be.mapper.Mapper;
 import com.coaltionbuilder.coalitionbuilder_be.model.*;
 import com.coaltionbuilder.coalitionbuilder_be.repository.PostRepository;
 import com.coaltionbuilder.coalitionbuilder_be.repository.CommentRepository;
 import com.coaltionbuilder.coalitionbuilder_be.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,17 +29,19 @@ public class DiscussionService {
 
   private final UserRepository userRepository;
 
-  private final DTOMapper DTOMapper;
+  private final Mapper Mapper;
+
+  private ModelMapper modelMapper;
 
   private List<Post> posts = new ArrayList<>();
 
   private User user;
 
-  public DiscussionService(PostRepository postRepository, CommentRepository commentRepository, UserRepository userRepository, DTOMapper DTOMapper) {
+  public DiscussionService(PostRepository postRepository, CommentRepository commentRepository, UserRepository userRepository, Mapper Mapper) {
     this.postRepository = postRepository;
     this.commentRepository = commentRepository;
     this.userRepository = userRepository;
-    this.DTOMapper = DTOMapper;
+    this.Mapper = Mapper;
   }
 
   @PostConstruct
@@ -71,43 +74,44 @@ public class DiscussionService {
     }
 
     // Add comments to posts
-//    for(Post post : posts) {
-//
-//      for(int i = 1; i <= rand.nextInt(15) + 1; i++) {
-//        Comment comment = Comment.builder()
-//                .author(user)
-//                .post(post)
-//                .message("Example comment " + i)
-//                .build();
-//
-//        this.commentRepository.save(comment);
-//
-//        for(int j = 1; j <= rand.nextInt(15); j++) {
-//          Comment childComment = Comment.builder()
-//                  .author(user)
-//                  .post(post)
-//                  .parentComment(comment)
-//                  .message("Example childcomment " + i)
-//                  .build();
-//          this.commentRepository.save(childComment);
-//
-//          for(int h = 1; h <= rand.nextInt(15); h++) {
-//
-//            Comment subChildComment = Comment.builder()
-//                    .author(user)
-//                    .post(post)
-//                    .parentComment(childComment)
-//                    .message("Example subchildcomment " + i)
-//                    .build();
-//            this.commentRepository.save(subChildComment);
-//          }
-//
-//        }
-//      }
-//    }
+    for(Post post : posts) {
+
+      for(int i = 1; i <= rand.nextInt(15) + 1; i++) {
+        Comment comment = Comment.builder()
+                .author(user)
+                .post(post)
+                .message("Example comment " + i)
+                .build();
+
+        this.commentRepository.save(comment);
+
+        for(int j = 1; j <= rand.nextInt(15); j++) {
+          Comment childComment = Comment.builder()
+                  .author(user)
+                  .post(post)
+                  .parentComment(comment)
+                  .message("Example childcomment " + i)
+                  .build();
+          this.commentRepository.save(childComment);
+
+          for(int h = 1; h <= rand.nextInt(15); h++) {
+
+            Comment subChildComment = Comment.builder()
+                    .author(user)
+                    .post(post)
+                    .parentComment(childComment)
+                    .message("Example subchildcomment " + i)
+                    .build();
+            this.commentRepository.save(subChildComment);
+          }
+
+        }
+      }
+    }
   }
 
   public List<Post> retrieveAllPosts() {
+    this.Mapper.mapPost().apply(new PostDto());
     return this.postRepository.findAll();
   }
 
@@ -118,18 +122,6 @@ public class DiscussionService {
   public List<Comment> retrieveRootCommentsByPost(Post post) {
     return this.commentRepository.findByPostAndParentCommentIsNull(post);
   }
-
-  public List<Comment> retrieveCommentsByUser(User user) {
-    return this.commentRepository.findByAuthor(user);
-  }
-
-  public List<Comment> retrieveChildComments(Comment comment) {
-    return this.commentRepository.findByParentComment(comment);
-  }
-
-//  public List<Comment> retrieveChildCommentsById(Integer id) {
-//    return this.commentRepository.findChildCommentsById(id);
-//  }
 
   public Comment retrieveCommentById(Integer id) {
     return this.commentRepository.findById(id).orElseThrow(
