@@ -1,19 +1,34 @@
 package com.coaltionbuilder.coalitionbuilder_be.response;
 
 import lombok.Builder;
-import lombok.Data;
-import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
-
-@Data
 @Builder
 public class ErrorResponse {
 
   private String message;
+  private int code;
+  private String moreInfo;
 
-  private HttpStatus status;
+  public ErrorResponse(String message, int code, String moreInfo) {
+    super();
+    this.message = message;
+    this.code = code;
+    this.moreInfo = moreInfo;
+  }
 
-  private LocalDateTime timestamp;
+  public String getMessage() {
 
+    return message;
+  }
+
+  public int getCode() {
+
+    return code;
+  }
+
+  public String getMoreInfo() {
+
+    return moreInfo;
+  }
 }
+

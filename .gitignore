@@ -1,4 +1,5 @@
 coalitionbuilder_fe/node_modules/
+coalitionbuilder_be/target/
 coalitionbuilder_test/dist/
 coalitionbuilder_test/node_modules/
 coalitionbuilder_be/ruiterr/

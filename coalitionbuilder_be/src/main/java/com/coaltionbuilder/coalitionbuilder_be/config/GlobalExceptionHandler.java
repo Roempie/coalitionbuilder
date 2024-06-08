@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.time.LocalDateTime;
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -21,8 +19,7 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             ErrorResponse.builder()
                     .message(ex.getMessage())
-                    .status(HttpStatus.NOT_FOUND)
-                    .timestamp(LocalDateTime.now())
+                    .code(HttpStatus.NOT_FOUND.value())
                     .build()
     );
   }
@@ -33,8 +30,7 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(
             ErrorResponse.builder()
                     .message(ex.getMessage())
-                    .status(HttpStatus.UNPROCESSABLE_ENTITY)
-                    .timestamp(LocalDateTime.now())
+                    .code(HttpStatus.UNPROCESSABLE_ENTITY.value())
                     .build()
     );
   }

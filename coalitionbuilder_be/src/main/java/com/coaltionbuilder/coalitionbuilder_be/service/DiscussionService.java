@@ -4,13 +4,11 @@ import com.coaltionbuilder.coalitionbuilder_be.exception.CommentNotFoundExceptio
 import com.coaltionbuilder.coalitionbuilder_be.exception.PostNotFoundException;
 import com.coaltionbuilder.coalitionbuilder_be.exception.ResourceInvalidException;
 import com.coaltionbuilder.coalitionbuilder_be.exception.UserNotFoundException;
-import com.coaltionbuilder.coalitionbuilder_be.mapper.Mapper;
 import com.coaltionbuilder.coalitionbuilder_be.model.*;
 import com.coaltionbuilder.coalitionbuilder_be.repository.PostRepository;
 import com.coaltionbuilder.coalitionbuilder_be.repository.CommentRepository;
 import com.coaltionbuilder.coalitionbuilder_be.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,19 +27,14 @@ public class DiscussionService {
 
   private final UserRepository userRepository;
 
-  private final Mapper Mapper;
-
-  private ModelMapper modelMapper;
-
   private List<Post> posts = new ArrayList<>();
 
   private User user;
 
-  public DiscussionService(PostRepository postRepository, CommentRepository commentRepository, UserRepository userRepository, Mapper Mapper) {
+  public DiscussionService(PostRepository postRepository, CommentRepository commentRepository, UserRepository userRepository) {
     this.postRepository = postRepository;
     this.commentRepository = commentRepository;
     this.userRepository = userRepository;
-    this.Mapper = Mapper;
   }
 
   @PostConstruct
@@ -111,7 +104,6 @@ public class DiscussionService {
   }
 
   public List<Post> retrieveAllPosts() {
-    this.Mapper.mapPost().apply(new PostDto());
     return this.postRepository.findAll();
   }
 
@@ -163,8 +155,8 @@ public class DiscussionService {
             () -> new UserNotFoundException("User with email " + username + " does not exist.")
     ));
     comment.setPost(
-            this.postRepository.findById(commentDto.getPostId()).orElseThrow(
-                    () -> new PostNotFoundException("Post with ID=" + commentDto.getPostId() + " does not exist.")
+            this.postRepository.findById(commentDto.getPost().getId()).orElseThrow(
+                    () -> new PostNotFoundException("Post with ID=" + commentDto.getPost().getId() + " does not exist.")
             )
     );
 
